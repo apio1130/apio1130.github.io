@@ -106,7 +106,7 @@ message.value = '메세지 변경됨'
 컴포넌트의 `<script setup>` 블록에 선언된 반응형 상태는 템플릿에서 직접 사용할 수 있습니다.  
 이중 중괄호 문법을 사용하여 `counter` 객체와 `message` ref 의 값을 동적으로 텍스트로 렌더링하는 방법입니다.
 
-```html
+```vue
 {% raw %}<h1>{{ message }}</h1>
 <h1>{{ message.split('').reverse().join('') }}</h1>
 <p>숫자 세기: {{ counter.count }}</p>{% endraw %}
