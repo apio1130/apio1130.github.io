@@ -18,19 +18,26 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
+import mermaid from "astro-mermaid";
 
 export default defineConfig({
   site: config.site.url,
   integrations: [
+    // 1. mdx()보다 먼저 마크다운 블록을 처리하도록 맨 위로 이동
+    mermaid({
+      theme: "default",
+      autoTheme: true,
+    }),
     mdx(),
     sitemap({
       filter: page =>
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
     }),
   ],
+  // 2. 기본 로케일을 한국어("ko")로 변경
   i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
+    locales: ["ko", "en"],
+    defaultLocale: "ko",
     routing: {
       prefixDefaultLocale: false,
     },
