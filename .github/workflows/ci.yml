@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml (유지하고 싶을 때 npm 버전으로 수정한 코드)
 name: CI
 
 permissions:
@@ -5,11 +6,7 @@ permissions:
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
+    types: [opened, edited, synchronize, reopened]
   workflow_call:
 
 jobs:
@@ -22,25 +19,20 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "📦 Install pnpm"
-        uses: pnpm/action-setup@v4
-        with:
-          version: "11.3.0"
-
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "pnpm"
+          cache: "npm"
 
       - name: "📦 Install dependencies"
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: "🔎 Lint code"
-        run: pnpm run lint
+        run: npm run lint
 
       - name: "📝 Checking code format"
-        run: pnpm run format:check
+        run: npm run format:check
 
       - name: "🚀 Build the project"
-        run: pnpm run build
+        run: npm run build
