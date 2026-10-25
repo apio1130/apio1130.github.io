@@ -1,0 +1,66 @@
+---
+const repo = "apio1130/apio1130.github.io";
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID ?? "R_kgDOVOkO4A";
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY ?? "General";
+const categoryId =
+  import.meta.env.PUBLIC_GISCUS_CATEGORY_ID ?? "DIC_kwDOVOkO4M4DJjp0";
+---
+
+{
+  categoryId && (
+    <section
+      id="giscus-container"
+      class="mt-8"
+      data-repo={repo}
+      data-repo-id={repoId}
+      data-category={category}
+      data-category-id={categoryId}
+    />
+  )
+}
+
+<script>
+  function loadGiscus() {
+    const container = document.querySelector<HTMLElement>("#giscus-container");
+    if (!container) return;
+
+    const getTheme = () =>
+      document.documentElement.getAttribute("data-theme") === "dark"
+        ? "dark"
+        : "light";
+
+    container.replaceChildren();
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.setAttribute("data-repo", container.dataset.repo ?? "");
+    script.setAttribute("data-repo-id", container.dataset.repoId ?? "");
+    script.setAttribute("data-category", container.dataset.category ?? "");
+    script.setAttribute("data-category-id", container.dataset.categoryId ?? "");
+    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "bottom");
+    script.setAttribute("data-theme", getTheme());
+    script.setAttribute("data-lang", "ko");
+    script.setAttribute("data-loading", "lazy");
+    container.appendChild(script);
+
+    const sendTheme = () => {
+      document
+        .querySelector<HTMLIFrameElement>("iframe.giscus-frame")
+        ?.contentWindow?.postMessage(
+          { giscus: { setConfig: { theme: getTheme() } } },
+          "https://giscus.app"
+        );
+    };
+    new MutationObserver(sendTheme).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+  }
+
+  document.addEventListener("astro:page-load", loadGiscus);
+</script>

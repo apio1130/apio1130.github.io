@@ -15,6 +15,8 @@ export default {
     sharePostIntro: "Share this post:",
     sharePostOn: "Share this post on {{platform}}",
     sharePostViaEmail: "Share this post via email",
+    copyLink: "Copy link",
+    linkCopied: "Link copied!",
     tagLabel: "Tags",
     backToTop: "Back to top",
     goBack: "Go back",

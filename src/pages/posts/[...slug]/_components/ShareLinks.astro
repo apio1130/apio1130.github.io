@@ -1,54 +1,73 @@
 ---
-import LinkButton from "@/components/LinkButton.astro";
-import { tplStr, useTranslations } from "@/i18n";
-import config from "@/config";
+import { useTranslations } from "@/i18n";
 
-const { shareLinks } = config;
 const t = useTranslations(Astro.currentLocale);
-
-const icons = import.meta.glob<{
-  default: (_props: Record<string, unknown>) => unknown;
-}>("/src/assets/icons/socials/*.svg");
-
-const pageUrl = Astro.url;
-
-const platformLabel = (name: string) =>
-  name.charAt(0).toUpperCase() + name.slice(1);
-
-const items = await Promise.all(
-  shareLinks.map(async ({ name, url, linkTitle }) => {
-    const mod = await icons[`/src/assets/icons/socials/${name}.svg`]?.();
-    const Icon = mod?.default;
-    const title =
-      linkTitle ??
-      (name === "mail"
-        ? t.post.sharePostViaEmail
-        : tplStr(t.post.sharePostOn, { platform: platformLabel(name) }));
-    return { url, title, Icon };
-  })
-);
 ---
 
-{
-  items.some(({ Icon }) => Icon) && (
-    <div class="flex flex-none flex-col items-center justify-center gap-1 md:items-start">
-      <span class="italic">{t.post.sharePostIntro}</span>
-      <div class="text-center">
-        {items.map(({ url, title, Icon }) =>
-          Icon ? (
-            <LinkButton
-              href={`${url}${pageUrl}`}
-              class="scale-90 p-2 hover:rotate-6 sm:p-1"
-              title={title}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
-              <span class="sr-only">{title}</span>
-            </LinkButton>
-          ) : null
-        )}
-      </div>
-    </div>
-  )
-}
+<div
+  class="flex flex-none flex-col items-center justify-center gap-1 md:items-start"
+>
+  <span class="italic">{t.post.sharePostIntro}</span>
+  <div class="text-center">
+    <button
+      type="button"
+      id="copy-link-button"
+      class="group hover:text-accent inline-flex scale-90 items-center gap-1 p-2 sm:p-1"
+      title={t.post.copyLink}
+      data-copied-label={t.post.linkCopied}
+      data-default-label={t.post.copyLink}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="inline-block size-6 opacity-90"
+        aria-hidden="true"
+      >
+        <path d="M9 15l6 -6"></path>
+        <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"></path>
+        <path
+          d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"
+        ></path>
+      </svg>
+      <span id="copy-link-label" class="text-sm" aria-live="polite"
+        >{t.post.copyLink}</span
+      >
+    </button>
+  </div>
+</div>
+
+<script>
+  function setupCopyLink() {
+    const button = document.querySelector<HTMLButtonElement>(
+      "#copy-link-button"
+    );
+    const label = document.querySelector<HTMLElement>("#copy-link-label");
+    if (!button || !label) return;
+
+    let timer: number | undefined;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+      } catch {
+        const input = document.createElement("input");
+        input.value = window.location.href;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        input.remove();
+      }
+      label.textContent = button.dataset.copiedLabel ?? "";
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        label.textContent = button.dataset.defaultLabel ?? "";
+      }, 2000);
+    });
+  }
+
+  document.addEventListener("astro:page-load", setupCopyLink);
+</script>

@@ -3,8 +3,8 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://apio1130.github.io/",
-    title: "apio1130 Tech Blog",
-    description: "Backend Architecture & Engineering Log",
+    title: "notepad",
+    description: "학습한 기술과 관심 있는 기술을 기록하는 블로그",
     author: "김기준",
     profile: "https://github.com/apio1130",
     ogImage: "default-og.jpg",
@@ -34,9 +34,6 @@ export default defineAstroPaperConfig({
     // { name: "linkedin", url: "https://www.linkedin.com/in/username/" },
     // { name: "mail", url: "mailto:yourmail@gmail.com" },
   ],
-  shareLinks: [
-    { name: "x", url: "https://x.com/intent/post?url=" },
-    { name: "telegram", url: "https://t.me/share/url?url=" },
-    { name: "mail", url: "mailto:?subject=See%20this%20post&body=" },
-  ],
+  // 공유는 글 하단의 '링크 복사' 버튼만 사용합니다.
+  shareLinks: [],
 });
